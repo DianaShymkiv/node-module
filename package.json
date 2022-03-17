@@ -8,9 +8,11 @@
     "watch:server": "nodemon './src/app.ts' --watch './src'",
     "lint": "eslint --cache --ext .js,.ts src",
     "lint:fix": "npm run lint -- --fix",
+
     "typeorm": "node -r ts-node/register ./node_modules/typeorm/cli.js",
     "migration:run": "npm run typeorm migration:run",
-    "migration:revert": "npm run typeorm migration:revert"
+    "migration:revert": "npm run typeorm migration:revert",
+    "migration:generate": "typeorm migration:create -n $npm_config_name"
   },
   "author": "",
   "license": "ISC",
