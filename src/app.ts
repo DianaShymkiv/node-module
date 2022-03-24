@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 import 'reflect-metadata';
 import { createConnection, getManager } from 'typeorm';
 import { User } from './entity/user';
+import { Post } from './entity/posts';
+import { Comment } from './entity/comment';
 
 const app = express();
 app.use(express.json());
@@ -29,7 +31,7 @@ app.post('/users', async (req, res) => {
     res.json(createUser);
 });
 
-app.put('/users/:id', async (req, res) => {
+app.patch('/users/:id', async (req, res) => {
     const { password, email } = req.body;
     const createUser = await getManager()
         .getRepository(User)
@@ -45,6 +47,38 @@ app.delete('/users/:id', async (req, res) => {
         .getRepository(User)
         .softDelete({ id: Number(req.params.id) });
     res.json(createUser);
+});
+
+app.get('/posts/:userId', async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const post = await getManager()
+        .getRepository(Post)
+        .createQueryBuilder('post')
+        .leftJoin('User', 'user', 'user.id = post.userId')
+        .where('post.userId = user.id', { userId: Number(userId) })
+        .getMany();
+    res.json(post);
+});
+
+app.patch('/posts/:id', async (req, res) => {
+    const { text } = req.body;
+    const updatePost = await getManager()
+        .getRepository(Post)
+        .update({ id: Number(req.params.id) }, {
+            text,
+        });
+    res.json(updatePost);
+});
+
+app.get('/comments/:userId', async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const comments = await getManager().getRepository(Comment)
+        .createQueryBuilder('comment')
+        .leftJoinAndSelect('comment.user', 'user')
+        .leftJoinAndSelect('comment.post', 'post')
+        .where('comment.authorId = user.id', { userId: Number(userId) })
+        .getMany();
+    res.json(comments);
 });
 
 app.listen(5500, async () => {
