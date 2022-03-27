@@ -1,87 +1,17 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import 'reflect-metadata';
-import { createConnection, getManager } from 'typeorm';
-import { User } from './entity/user';
-import { Post } from './entity/posts';
-import { Comment } from './entity/comment';
+import { createConnection } from 'typeorm';
+import { apiRouter } from './router/apiRouter';
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/users', async (req: Request, res: Response) => {
-    // const users = await getManager().getRepository(User).find();
-    // const users = await getManager().getRepository(User).find({ relations: ['posts'] });
-    // // для того щоб в юзерах відображались пости
-    // console.log(users);
-    // res.json(users);
+app.use(apiRouter);
 
-    // //////////////////////////////////////////////////////////////////////////////////////////
-    const users = await getManager().getRepository(User)
-        .createQueryBuilder('user')
-        .leftJoin('Posts', 'posts', 'posts.userId = user.id')
-        .where('posts.text = "asd"')
-        .getMany();
-    res.json(users);
-});
+const { PORT } = process.env;
 
-app.post('/users', async (req, res) => {
-    console.log(req.body);
-    const createUser = await getManager().getRepository(User).save(req.body);
-    res.json(createUser);
-});
-
-app.patch('/users/:id', async (req, res) => {
-    const { password, email } = req.body;
-    const createUser = await getManager()
-        .getRepository(User)
-        .update({ id: Number(req.params.id) }, {
-            password,
-            email,
-        });
-    res.json(createUser);
-});
-
-app.delete('/users/:id', async (req, res) => {
-    const createUser = await getManager()
-        .getRepository(User)
-        .softDelete({ id: Number(req.params.id) });
-    res.json(createUser);
-});
-
-app.get('/posts/:userId', async (req: Request, res: Response) => {
-    const { userId } = req.params;
-    const post = await getManager()
-        .getRepository(Post)
-        .createQueryBuilder('post')
-        .leftJoin('User', 'user', 'user.id = post.userId')
-        .where('post.userId = user.id', { userId: Number(userId) })
-        .getMany();
-    res.json(post);
-});
-
-app.patch('/posts/:id', async (req, res) => {
-    const { text } = req.body;
-    const updatePost = await getManager()
-        .getRepository(Post)
-        .update({ id: Number(req.params.id) }, {
-            text,
-        });
-    res.json(updatePost);
-});
-
-app.get('/comments/:userId', async (req: Request, res: Response) => {
-    const { userId } = req.params;
-    const comments = await getManager().getRepository(Comment)
-        .createQueryBuilder('comment')
-        .leftJoinAndSelect('comment.user', 'user')
-        .leftJoinAndSelect('comment.post', 'post')
-        .where('comment.authorId = user.id', { userId: Number(userId) })
-        .getMany();
-    res.json(comments);
-});
-
-app.listen(5500, async () => {
+app.listen(PORT, async () => {
     try {
         const connection = await createConnection();
         if (connection) {
@@ -90,5 +20,5 @@ app.listen(5500, async () => {
     } catch (err) {
         if (err) console.log(err);
     }
-    console.log('Server is running in localhost:5500');
+    console.log(`Server is running on localhost:${PORT}`);
 });
