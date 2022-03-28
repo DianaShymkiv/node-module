@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { DeleteResult } from 'typeorm';
-import { IUser } from '../entity/user';
-import { userService } from '../services/userService';
+
+import { IUser } from '../entity';
+import { userService } from '../services';
 
 class UserController {
     public async getUsers(req: Request, res: Response): Promise<Response<IUser[]>> {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import { IComment } from '../entity/comment';
-import { commentService } from '../services/commentService';
+import { IComment } from '../entity';
+import { commentService } from '../services';
 
 class CommentController {
     public async getUserComments(req: Request, res: Response): Promise<Response<IComment[]>> {

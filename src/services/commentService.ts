@@ -1,5 +1,5 @@
-import { IComment } from '../entity/comment';
-import { commentRepository } from '../repositories/comment/commentRepository';
+import { IComment } from '../entity';
+import { commentRepository } from '../repositories';
 
 class CommentService {
     public async getUserComments(id: string): Promise<IComment[]> {

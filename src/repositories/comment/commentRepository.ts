@@ -1,7 +1,7 @@
 import { getManager, Repository } from 'typeorm';
 
 import { ICommentRepository } from './commentRepository.interface';
-import { Comment, IComment } from '../../entity/comment';
+import { Comment, IComment } from '../../entity';
 
 class CommentRepository extends Repository<Comment> implements ICommentRepository {
     public async getUserComments(userId: number): Promise<IComment[]> {

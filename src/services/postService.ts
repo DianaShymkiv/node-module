@@ -1,7 +1,7 @@
 import { UpdateResult } from 'typeorm';
 
-import { postRepository } from '../repositories/post/postRepository';
-import { IPost } from '../entity/posts';
+import { postRepository } from '../repositories';
+import { IPost } from '../entity';
 
 class PostService {
     public async getUserPostsByUserId(userId : string): Promise<IPost[]> {
