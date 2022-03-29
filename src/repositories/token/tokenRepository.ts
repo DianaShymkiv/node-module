@@ -11,6 +11,10 @@ class TokenRepository extends Repository<Token> implements ITokenRepository {
         // метод save через те що якщо такий токен вже існує то він просто зробить update
     }
 
+    public findByParams(filterObject: Partial<IToken>): Promise<IToken | undefined> {
+        return getManager().getRepository(Token).findOne(filterObject);
+    }
+
     // метод який дивиться чи існує вже токен у цього юзера
     public async findTokenByUserId(userId: number): Promise<IToken | undefined> {
         return getManager().getRepository(Token).findOne({ userId });
