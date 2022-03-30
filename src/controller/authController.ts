@@ -24,7 +24,7 @@ class AuthController {
         // console.log(req.user);
         const { id } = req.user as IUser;
 
-        await tokenService.deleteUserTokenPair(id);
+        await tokenService.deleteUserTokenPair(id); // delete all tokens from all devices for userId
 
         return res.json('ok');
     }
@@ -38,6 +38,27 @@ class AuthController {
             // вертати нічого не потрібно, якщо співпадають то добре і пішли далі якщо ні то впаде помилка
 
             const { refreshToken, accessToken } = tokenService.generateTokenPair({ userId: id, userEmail: email });
+
+            await tokenRepository.createToken({ refreshToken, accessToken, userId: id });
+
+            res.json({
+                refreshToken,
+                accessToken,
+                user: req.user,
+            });
+        } catch (e) {
+            res.status(400).json(e);
+        }
+    }
+
+    async refreshToken(req: IRequestExtended, res: Response) {
+        try {
+            const { id, email } = req.user as IUser;
+            const refreshTokenToDelete = req.get('Authorization');
+
+            await tokenService.deleteUserTokenPairByParams({ refreshToken: refreshTokenToDelete });
+
+            const { accessToken, refreshToken } = await tokenService.generateTokenPair({ userId: id, userEmail: email });
 
             await tokenRepository.createToken({ refreshToken, accessToken, userId: id });
 

@@ -31,7 +31,7 @@ export class Token extends CommonFields implements IToken {
         width: 255,
         nullable: false,
     })
-       accessToken: string;
+        accessToken: string;
 
     @Column({
         type: 'int',

@@ -37,6 +37,10 @@ class TokenService {
         return tokenRepository.deleteByParams({ userId });
     }
 
+    async deleteUserTokenPairByParams(searchObject: Partial<ITokenPair>) {
+        return tokenRepository.deleteByParams(searchObject);
+    }
+
     verifyToken(authToken: string, tokenType = 'access'):IUserPayload {
         // перевіряємо токен, по дефолту tokenType = access то розкодовуємо за SECRET_ACCESS_KEY
         // ,але якщо tokenType = refresh то за рефреш
