@@ -3,8 +3,8 @@ import { Request, Response } from 'express';
 import { IRequestExtended, ITokenData } from '../interfaces';
 import { authService, tokenService, userService } from '../services';
 import { COOKIE } from '../constants';
-import { IUser } from '../entity';
 import { tokenRepository } from '../repositories';
+import { IUser } from '../entity';
 
 class AuthController {
     public async registration(req: Request, res: Response): Promise<Response<ITokenData>> {
