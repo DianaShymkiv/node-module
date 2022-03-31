@@ -1,3 +1,3 @@
 export const constants = {
-    AUTHIRIZATION: 'Authorizatoin'
-}
+    AUTHIRIZATION: 'Authorizatoin',
+};

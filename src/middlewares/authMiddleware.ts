@@ -3,7 +3,7 @@ import { NextFunction, Response } from 'express';
 import { tokenService, userService } from '../services';
 import { IRequestExtended } from '../interfaces';
 import { tokenRepository } from '../repositories';
-import {constants} from "../constants";
+import { constants } from '../constants';
 
 class AuthMiddleware {
     public async checkAccessToken(req:IRequestExtended, res:Response, next: NextFunction) {
