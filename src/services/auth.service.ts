@@ -1,6 +1,6 @@
-import { userService } from './userService';
+import { userService } from './user.service';
 import { IUser } from '../entity';
-import { tokenService } from './tokenService';
+import { tokenService } from './token.service';
 import { ITokenData } from '../interfaces';
 
 class AuthService {

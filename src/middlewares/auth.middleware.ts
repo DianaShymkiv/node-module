@@ -3,7 +3,7 @@ import { NextFunction, Response } from 'express';
 import { tokenService, userService } from '../services';
 import { IRequestExtended } from '../interfaces';
 import { tokenRepository } from '../repositories';
-import {constants} from "../constants";
+import { constants } from '../constants';
 
 class AuthMiddleware {
     public async checkAccessToken(req:IRequestExtended, res:Response, next: NextFunction) {
@@ -19,13 +19,13 @@ class AuthMiddleware {
             const tokenPairFromDB = await tokenRepository.findByParams({ accessToken });
 
             if (!tokenPairFromDB) {
-                throw new Error('Token not valid');
+                throw new Error('TokenEntity not valid');
             }
 
             const userFromToken = await userService.getUserByEmail(userEmail);
 
             if (!userFromToken) {
-                throw new Error('Token not valid');
+                throw new Error('TokenEntity not valid');
                 // токен розшифрувався але такого немає в базі
             }
 
@@ -54,13 +54,13 @@ class AuthMiddleware {
             // find token in the DB
 
             if (!tokenPairFromDB) {
-                throw new Error('Token not valid');
+                throw new Error('TokenEntity not valid');
             }
 
             const userFromToken = await userService.getUserByEmail(userEmail);
 
             if (!userFromToken) {
-                throw new Error('Token not valid');
+                throw new Error('TokenEntity not valid');
                 // токен розшифрувався але такого немає в базі
             }
 

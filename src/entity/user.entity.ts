@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 
-import { CommonFields, ICommonFields } from './commonFields';
-import { IPost, Post } from './posts';
-import { Comment, IComment } from './comment';
+import { CommonFieldsEntity, ICommonFields } from './commonFields.entity';
+import { IPost, Post } from './posts.entity';
+import { CommentEntity, IComment } from './comment.entity';
 import { config } from '../config';
 
 export interface IUser extends ICommonFields{
@@ -19,7 +19,7 @@ export interface IUser extends ICommonFields{
 
 // name of the table in which we reference
 @Entity('Users', { database: config.MYSQL_DATABASE_NAME })
-export class User extends CommonFields implements IUser {
+export class UserEntity extends CommonFieldsEntity implements IUser {
     @Column({
         type: 'varchar',
         width: 255,
@@ -65,6 +65,6 @@ export class User extends CommonFields implements IUser {
     @OneToMany(() => Post, (post) => post.user)
         posts: Post[];
 
-    @OneToMany(() => Comment, (comment) => comment.user)
-        comments: Comment[];
+    @OneToMany(() => CommentEntity, (comment) => comment.user)
+        comments: CommentEntity[];
 }

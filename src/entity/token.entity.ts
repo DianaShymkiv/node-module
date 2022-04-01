@@ -1,8 +1,8 @@
 import {
     Column, Entity, JoinColumn, ManyToOne,
 } from 'typeorm';
-import { CommonFields, ICommonFields } from './commonFields';
-import { User } from './user';
+import { CommonFieldsEntity, ICommonFields } from './commonFields.entity';
+import { UserEntity } from './user.entity';
 import { config } from '../config';
 
 export interface IToken extends ICommonFields{
@@ -18,7 +18,7 @@ export interface IToken extends ICommonFields{
 // згенерований штучно по наших ключах. І коли ми робимо логаут ми видаляємо і з бази
 
 @Entity('Tokens', { database: config.MYSQL_DATABASE_NAME })
-export class Token extends CommonFields implements IToken {
+export class TokenEntity extends CommonFieldsEntity implements IToken {
     @Column({
         type: 'varchar',
         width: 255,
@@ -38,7 +38,7 @@ export class Token extends CommonFields implements IToken {
     })
         userId: number;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => UserEntity)
     @JoinColumn({ name: 'userId' })
-        user: User;
+        user: UserEntity;
 }

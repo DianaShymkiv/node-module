@@ -1,9 +1,9 @@
 import {
     Column, Entity, JoinColumn, ManyToOne,
 } from 'typeorm';
-import { CommonFields } from './commonFields';
-import { User } from './user';
-import { Post } from './posts';
+import { CommonFieldsEntity } from './commonFields.entity';
+import { UserEntity } from './user.entity';
+import { Post } from './posts.entity';
 
 export interface IComment {
     text: string;
@@ -14,7 +14,7 @@ export interface IComment {
 }
 
 @Entity('Comments', { database: 'root' })
-export class Comment extends CommonFields implements IComment {
+export class CommentEntity extends CommonFieldsEntity implements IComment {
     @Column({
         type: 'varchar',
         width: 255,
@@ -48,7 +48,7 @@ export class Comment extends CommonFields implements IComment {
     @JoinColumn({ name: 'postId' })
         post: Post;
 
-    @ManyToOne(() => User, (user) => user.comments)
+    @ManyToOne(() => UserEntity, (user) => user.comments)
     @JoinColumn({ name: 'authorId' })
-        user: User;
+        user: UserEntity;
 }
