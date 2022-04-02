@@ -1,14 +1,20 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 
 import { IRequestExtended, ITokenData } from '../interfaces';
-import { authService, tokenService, userService } from '../services';
-import { COOKIE } from '../constants';
+import {
+    authService, emailService, tokenService, userService,
+} from '../services';
+import { COOKIE, emailActionEnum } from '../constants';
 import { tokenRepository } from '../repositories';
 import { IUser } from '../entity';
 
 class AuthController {
-    public async registration(req: Request, res: Response): Promise<Response<ITokenData>> {
+    public async registration(req: IRequestExtended, res: Response): Promise<Response<ITokenData>> {
+        const { email } = req.user as IUser;
         const data = await authService.registration(req.body);
+
+        await emailService.sendMail(email, emailActionEnum.REGISTRATION);
+
         res.cookie(
             COOKIE.nameRefreshToken,
             data.refreshToken,
@@ -33,6 +39,8 @@ class AuthController {
         try {
             const { id, email, password: hashPassword } = req.user as IUser;
             const { password } = req.body;
+
+            await emailService.sendMail(email, emailActionEnum.LOGIN);
 
             await userService.compareUserPasswords(password, hashPassword);
             // вертати нічого не потрібно, якщо співпадають то добре і пішли далі якщо ні то впаде помилка

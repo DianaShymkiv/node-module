@@ -1,11 +1,9 @@
-import { Joi, Segments } from 'celebrate';
+import * as Joi from 'joi';
 import { commonValidators } from '../common/common.validators';
 
 export const authValidator = {
-    login: {
-        [Segments.BODY]: Joi.object({
-            email: commonValidators.emailValidator,
-            password: Joi.string().required().min(2),
-        }),
-    },
+    login: Joi.object({
+        email: commonValidators.emailValidator.message('Email not valid').trim(),
+        password: Joi.string().required().min(2).trim(),
+    }),
 };

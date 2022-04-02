@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express';
 
+import { ErrorHandler } from '../error';
 import { IRequestExtended } from '../interfaces';
 import { userRepository } from '../repositories';
-import { ErrorHandler } from "../interfaces/Error.handler";
 
 class UserMiddleware {
     async checkIsUserExist(req: IRequestExtended, res: Response, next: NextFunction):
