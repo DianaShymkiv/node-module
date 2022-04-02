@@ -6,7 +6,7 @@ export const emailInfo = {
         html: 'You are logged in',
     },
 
-    [emailActionEnum.ACCOUNT_BLOCKED]: {
+    [emailActionEnum.ACCOUNT_DELETED]: {
         subject: 'Opps...',
         html: 'Your account has been blocked',
     },

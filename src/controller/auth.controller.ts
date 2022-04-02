@@ -10,8 +10,8 @@ import { IUser } from '../entity';
 
 class AuthController {
     public async registration(req: IRequestExtended, res: Response): Promise<Response<ITokenData>> {
-        const { email } = req.user as IUser;
         const data = await authService.registration(req.body);
+        const { userEmail: email } = data;
 
         await emailService.sendMail(email, emailActionEnum.REGISTRATION);
 

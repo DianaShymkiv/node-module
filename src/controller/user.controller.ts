@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { DeleteResult } from 'typeorm';
 
 import { IUser } from '../entity';
-import { userService } from '../services';
+import { emailService, userService } from '../services';
+import { emailActionEnum } from '../constants';
 
 class UserController {
     public async getUsers(req: Request, res: Response): Promise<Response<IUser[]>> {
@@ -24,12 +25,19 @@ class UserController {
     public async updateUserById(req: Request, res: Response): Promise<Response<IUser>> {
         const { password, email } = req.body;
         const { id } = req.params;
+
+        await emailService.sendMail(email, emailActionEnum.PASSWORD_CHANGED); // TODO DONT WORK
+
         const updatedUser = await userService.updateUserById(id, password, email);
         return res.json(updatedUser);
     }
 
     public async softDeleteUserById(req:Request, res:Response): Promise<Response<DeleteResult>> {
         const { id } = req.params;
+        const { email } = req.body;
+
+        await emailService.sendMail(email, emailActionEnum.ACCOUNT_DELETED);
+
         const softDeletedUser = await userService.softDeleteUserById(id);
         return res.json(softDeletedUser);
     }
