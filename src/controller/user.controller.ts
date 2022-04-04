@@ -12,11 +12,6 @@ class UserController {
         return res.json(users);
     }
 
-    public async createUser(req: Request, res: Response): Promise<Response<IUser>> {
-        const createdUser = await userService.createUser(req.body);
-        return res.json(createdUser);
-    }
-
     public async getUserByEmail(req: Request, res: Response): Promise<Response<IUser>> {
         const { email } = req.params;
         const user = await userService.getUserByEmail(email);
