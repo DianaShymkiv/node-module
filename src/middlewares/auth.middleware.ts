@@ -100,6 +100,23 @@ class AuthMiddleware {
             next(e);
         }
     }
+
+    public isRegistrationDataValid(req: IRequestExtended, res: Response, next: NextFunction) {
+        try {
+            const { error, value } = authValidator.registration.validate(req.body);
+
+            if (error) {
+                next(new ErrorHandler(error.details[0].message, 400));
+                return;
+            }
+
+            req.body = value;
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export const authMiddleware = new AuthMiddleware();
