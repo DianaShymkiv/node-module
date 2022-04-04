@@ -4,6 +4,7 @@ import { DeleteResult } from 'typeorm';
 import { IUser } from '../entity';
 import { emailService, userService } from '../services';
 import { emailActionEnum } from '../constants';
+import { IRequestExtended } from '../interfaces';
 
 class UserController {
     public async getUsers(req: Request, res: Response): Promise<Response<IUser[]>> {
@@ -22,13 +23,16 @@ class UserController {
         return res.json(user);
     }
 
-    public async updateUserById(req: Request, res: Response): Promise<Response<IUser>> {
-        const { password, email } = req.body;
+    public async updateUserPasswordById(req: IRequestExtended, res: Response): Promise<Response<IUser>> {
+        const { password } = req.body;
         const { id } = req.params;
 
-        await emailService.sendMail(email, emailActionEnum.PASSWORD_CHANGED); // TODO DONT WORK
+        if (req.user) {
+            // console.log(req.user.email);
+            await emailService.sendMail(req.user.email, emailActionEnum.PASSWORD_CHANGED);
+        }
 
-        const updatedUser = await userService.updateUserById(id, password, email);
+        const updatedUser = await userService.updateUserPasswordById(id, password);
         return res.json(updatedUser);
     }
 

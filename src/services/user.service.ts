@@ -35,9 +35,9 @@ class UserService {
         return userRepository.getUsers();
     }
 
-    public async updateUserById(id:string, password: string, email: string):
-        Promise<UpdateResult> {
-        return userRepository.updateUserById(+id, password, email);
+    public async updateUserPasswordById(id:string, password: string): Promise<UpdateResult> {
+        const hashedPassword = await this._hashPassword(password);
+        return userRepository.updateUserById(+id, hashedPassword);
     }
 
     public async softDeleteUserById(id: string):Promise<DeleteResult> {
