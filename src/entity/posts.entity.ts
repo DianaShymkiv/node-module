@@ -1,5 +1,5 @@
 import {
-    Column, Entity, ManyToOne, JoinColumn, OneToMany,
+  Column, Entity, ManyToOne, JoinColumn, OneToMany,
 } from 'typeorm';
 import { CommonFieldsEntity, ICommonFields } from './commonFields.entity';
 import { UserEntity } from './user.entity';
@@ -16,28 +16,28 @@ export interface IPost extends ICommonFields{
 @Entity('Posts', { database: config.MYSQL_DATABASE_NAME })
 export class Post extends CommonFieldsEntity implements IPost {
     @Column({
-        type: 'varchar',
-        width: 255,
-        nullable: false,
+      type: 'varchar',
+      width: 255,
+      nullable: false,
     })
-        title: string;
+      title: string;
 
     @Column({
-        type: 'varchar',
-        width: 255,
-        nullable: false,
+      type: 'varchar',
+      width: 255,
+      nullable: false,
     })
-        text: string;
+      text: string;
 
     @Column({
-        type: 'int',
+      type: 'int',
     })
-        userId: number;
+      userId: number;
 
     @ManyToOne(() => UserEntity, (user) => user.posts)
     @JoinColumn({ name: 'userId' })
-        user: UserEntity;
+      user: UserEntity;
 
     @OneToMany(() => CommentEntity, (comment) => comment.post)
-        comments: CommentEntity[];
+      comments: CommentEntity[];
 }

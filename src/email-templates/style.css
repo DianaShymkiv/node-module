@@ -1,0 +1,23 @@
+.main {
+    background-color: #c5daff;
+    border: solid 1px #aacfff;
+    border-radius: 3px;
+    width: 300px;
+    padding: 10px;
+    color: black;
+}
+
+#id {
+    font-size: 16px;
+}
+
+.header {
+    font-weight: bold;
+    font-size: 24px;
+    text-align: center;
+}
+
+.text{
+    font-size: 18px;
+}
+

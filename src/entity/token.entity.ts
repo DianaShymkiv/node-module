@@ -1,5 +1,5 @@
 import {
-    Column, Entity, JoinColumn, ManyToOne,
+  Column, Entity, JoinColumn, ManyToOne,
 } from 'typeorm';
 import { CommonFieldsEntity, ICommonFields } from './commonFields.entity';
 import { UserEntity } from './user.entity';
@@ -20,25 +20,25 @@ export interface IToken extends ICommonFields{
 @Entity('Tokens', { database: config.MYSQL_DATABASE_NAME })
 export class TokenEntity extends CommonFieldsEntity implements IToken {
     @Column({
-        type: 'varchar',
-        width: 255,
-        nullable: false,
+      type: 'varchar',
+      width: 255,
+      nullable: false,
     })
-        refreshToken: string;
+      refreshToken: string;
 
     @Column({
-        type: 'varchar',
-        width: 255,
-        nullable: false,
+      type: 'varchar',
+      width: 255,
+      nullable: false,
     })
-        accessToken: string;
+      accessToken: string;
 
     @Column({
-        type: 'int',
+      type: 'int',
     })
-        userId: number;
+      userId: number;
 
     @ManyToOne(() => UserEntity)
     @JoinColumn({ name: 'userId' })
-        user: UserEntity;
+      user: UserEntity;
 }

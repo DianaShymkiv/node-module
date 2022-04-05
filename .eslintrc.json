@@ -15,9 +15,9 @@
         "@typescript-eslint"
     ],
     "rules": {
-//        "max-len": [ "warning",{"code": 140}],
+        "max-len": [ "warn",{"code": 140}],
         "no-console": "off",
-        "indent": ["error", 4],
+        "indent": ["error", 2],
         "import/prefer-default-export": "off",
         "import/extensions": [
             "error",

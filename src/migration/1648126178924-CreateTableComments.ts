@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateTableComments1648126178924 implements MigrationInterface {
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
         CREATE TABLE IF NOT EXISTS Comments (
             id INT PRIMARY KEY AUTO_INCREMENT,
             text VARCHAR(250) NOT NULL,
@@ -16,11 +16,11 @@ export class CreateTableComments1648126178924 implements MigrationInterface {
             FOREIGN KEY (postId) REFERENCES Posts(id)
             )
         `);
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
         DROP TABLE IF EXISTS Comments
         `);
-    }
+  }
 }

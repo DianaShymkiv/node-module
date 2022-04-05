@@ -8,115 +8,115 @@ import { authValidator } from '../validators';
 import { ErrorHandler } from '../error';
 
 class AuthMiddleware {
-    public async checkAccessToken(req:IRequestExtended, res:Response, next: NextFunction) {
-        try {
-            const accessToken = req.get(constants.AUTHIRIZATION);
+  public async checkAccessToken(req:IRequestExtended, res:Response, next: NextFunction) {
+    try {
+      const accessToken = req.get(constants.AUTHIRIZATION);
 
-            if (!accessToken) {
-                next(new ErrorHandler('No token', 400));
-                return;
-            }
+      if (!accessToken) {
+        next(new ErrorHandler('No token', 400));
+        return;
+      }
 
-            const { userEmail } = tokenService.verifyToken(accessToken);
+      const { userEmail } = tokenService.verifyToken(accessToken);
 
-            const tokenPairFromDB = await tokenRepository.findByParams({ accessToken });
+      const tokenPairFromDB = await tokenRepository.findByParams({ accessToken });
 
-            if (!tokenPairFromDB) {
-                next(new ErrorHandler('Token not valid', 401));
-                return;
-            }
+      if (!tokenPairFromDB) {
+        next(new ErrorHandler('Token not valid', 401));
+        return;
+      }
 
-            const userFromToken = await userService.getUserByEmail(userEmail);
+      const userFromToken = await userService.getUserByEmail(userEmail);
 
-            if (!userFromToken) {
-                next(new ErrorHandler('Token not valid', 401));
-                return;
-                // токен розшифрувався але такого немає в базі
-            }
+      if (!userFromToken) {
+        next(new ErrorHandler('Token not valid', 401));
+        return;
+        // токен розшифрувався але такого немає в базі
+      }
 
-            req.user = userFromToken;
+      req.user = userFromToken;
 
-            next();
-        } catch (e: any) {
-            res.status(401).json({
-                status: 401,
-                message: e.message,
-            });
-        }
+      next();
+    } catch (e: any) {
+      res.status(401).json({
+        status: 401,
+        message: e.message,
+      });
     }
+  }
 
-    public async checkRefreshToken(req:IRequestExtended, res:Response, next: NextFunction) {
-        try {
-            const refreshToken = req.get(constants.AUTHIRIZATION);
+  public async checkRefreshToken(req:IRequestExtended, res:Response, next: NextFunction) {
+    try {
+      const refreshToken = req.get(constants.AUTHIRIZATION);
 
-            if (!refreshToken) {
-                next(new ErrorHandler('No token', 400));
-                return;
-            }
+      if (!refreshToken) {
+        next(new ErrorHandler('No token', 400));
+        return;
+      }
 
-            const { userEmail } = tokenService.verifyToken(refreshToken, 'refresh');
+      const { userEmail } = tokenService.verifyToken(refreshToken, 'refresh');
 
-            const tokenPairFromDB = await tokenRepository.findByParams({ refreshToken });
-            // find token in the DB
+      const tokenPairFromDB = await tokenRepository.findByParams({ refreshToken });
+      // find token in the DB
 
-            if (!tokenPairFromDB) {
-                next(new ErrorHandler('Token not valid', 401));
-                return;
-            }
+      if (!tokenPairFromDB) {
+        next(new ErrorHandler('Token not valid', 401));
+        return;
+      }
 
-            const userFromToken = await userService.getUserByEmail(userEmail);
+      const userFromToken = await userService.getUserByEmail(userEmail);
 
-            if (!userFromToken) {
-                next(new ErrorHandler('Token not valid', 401));
-                return;
-                // токен розшифрувався але такого немає в базі
-            }
+      if (!userFromToken) {
+        next(new ErrorHandler('Token not valid', 401));
+        return;
+        // токен розшифрувався але такого немає в базі
+      }
 
-            req.user = userFromToken;
+      req.user = userFromToken;
 
-            next();
-        } catch (e: any) {
-            res.status(401)
-                .json({
-                    status: 401,
-                    message: e.message,
-                });
-        }
+      next();
+    } catch (e: any) {
+      res.status(401)
+        .json({
+          status: 401,
+          message: e.message,
+        });
     }
+  }
 
-    // VALIDATORS
-    public isLoginValid(req: IRequestExtended, res: Response, next: NextFunction) {
-        try {
-            const { error, value } = authValidator.login.validate(req.body);
+  // VALIDATORS
+  public isLoginValid(req: IRequestExtended, res: Response, next: NextFunction) {
+    try {
+      const { error, value } = authValidator.login.validate(req.body);
 
-            if (error) {
-                next(new ErrorHandler(error.details[0].message, 400));
-                return;
-            }
+      if (error) {
+        next(new ErrorHandler(error.details[0].message, 400));
+        return;
+      }
 
-            req.body = value;
-            next();
-        } catch (e) {
-            next(e);
-        }
+      req.body = value;
+      next();
+    } catch (e) {
+      next(e);
     }
+  }
 
-    public isRegistrationDataValid(req: IRequestExtended, res: Response, next: NextFunction) {
-        try {
-            const { error, value } = authValidator.registration.validate(req.body);
+  public isRegistrationDataValid(req: IRequestExtended, res: Response, next: NextFunction) {
+    try {
+      const { error, value } = authValidator.registration.validate(req.body);
 
-            if (error) {
-                next(new ErrorHandler(error.details[0].message, 400));
-                return;
-            }
+      if (error) {
+        next(new ErrorHandler(error.details[0].message, 400));
+        return;
+      }
 
-            req.body = value;
+      req.body = value;
 
-            next();
-        } catch (e) {
-            next(e);
-        }
+      next();
+    } catch (e) {
+      next(e);
     }
+  }
 }
 
 export const authMiddleware = new AuthMiddleware();

@@ -21,50 +21,50 @@ export interface IUser extends ICommonFields{
 @Entity('Users', { database: config.MYSQL_DATABASE_NAME })
 export class UserEntity extends CommonFieldsEntity implements IUser {
     @Column({
-        type: 'varchar',
-        width: 255,
-        nullable: false,
+      type: 'varchar',
+      width: 255,
+      nullable: false,
     })
-        firstName: string;
+      firstName: string;
 
     @Column({
-        type: 'varchar',
-        width: 255,
-        nullable: false,
+      type: 'varchar',
+      width: 255,
+      nullable: false,
     })
-        lastName: string;
+      lastName: string;
 
     @Column({
-        type: 'int',
+      type: 'int',
     })
-        age?: number;
+      age?: number;
 
     @Column({
-        type: 'varchar',
-        width: 255,
-        nullable: false,
-        unique: true,
+      type: 'varchar',
+      width: 255,
+      nullable: false,
+      unique: true,
     })
-        phone: string;
+      phone: string;
 
     @Column({
-        type: 'varchar',
-        width: 255,
-        nullable: false,
-        unique: true,
+      type: 'varchar',
+      width: 255,
+      nullable: false,
+      unique: true,
     })
-        email: string;
+      email: string;
 
     @Column({
-        type: 'varchar',
-        width: 255,
-        nullable: false,
+      type: 'varchar',
+      width: 255,
+      nullable: false,
     })
-        password: string;
+      password: string;
 
     @OneToMany(() => Post, (post) => post.user)
-        posts: Post[];
+      posts: Post[];
 
     @OneToMany(() => CommentEntity, (comment) => comment.user)
-        comments: CommentEntity[];
+      comments: CommentEntity[];
 }
