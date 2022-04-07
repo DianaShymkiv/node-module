@@ -4,6 +4,7 @@ import { createConnection } from 'typeorm';
 
 import { apiRouter } from './router';
 import { config } from './config';
+import { cronRun } from './cron';
 
 const app = express();
 
@@ -26,13 +27,15 @@ app.use('*', (err, req, res, next) => {
 const { PORT } = config;
 
 app.listen(PORT, async () => {
+  console.log(`Server is running on localhost:${PORT}`);
+
   try {
     const connection = await createConnection();
     if (connection) {
       console.log('DB connected');
     }
+    cronRun();
   } catch (err) {
     if (err) console.log(err);
   }
-  console.log(`Server is running on localhost:${PORT}`);
 });

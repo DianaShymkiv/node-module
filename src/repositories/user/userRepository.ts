@@ -5,8 +5,13 @@ import {
   Repository,
   UpdateResult,
 } from 'typeorm';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
 import { IUser, UserEntity } from '../../entity';
 import { IUserRepository } from './userRepository.interface';
+
+dayjs.extend(utc);
 
 @EntityRepository(UserEntity)
 class UserRepository extends Repository<UserEntity> implements IUserRepository {
@@ -32,15 +37,6 @@ class UserRepository extends Repository<UserEntity> implements IUserRepository {
     return getManager().getRepository(UserEntity).find();
   }
 
-  // public async updatePasswordByUserId(id: number, password: string): Promise<UpdateResult> {
-  //   return getManager()
-  //     .getRepository(UserEntity)
-  //     .update(
-  //       { id },
-  //       { password },
-  //     );
-  // }
-
   public async updateUserById(id: number, user:Partial<IUser>): Promise<UpdateResult> {
     return getManager()
       .getRepository(UserEntity)
@@ -50,11 +46,17 @@ class UserRepository extends Repository<UserEntity> implements IUserRepository {
       );
   }
 
-
   public async softDeleteUserById(id:number):Promise<DeleteResult> {
     return getManager()
       .getRepository(UserEntity)
       .softDelete({ id });
+  }
+
+  public async getNewUsers() {
+    return getManager().getRepository(UserEntity)
+      .createQueryBuilder('user')
+      .where('user.createdAt >= :date', {date: dayjs().utc().startOf('day').format() })
+      .getMany();
   }
 }
 
