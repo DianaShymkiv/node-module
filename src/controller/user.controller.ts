@@ -18,16 +18,15 @@ class UserController {
     return res.json(user);
   }
 
-  public async updateUserPasswordById(req: IRequestExtended, res: Response): Promise<Response<IUser>> {
-    const { password } = req.body;
+  public async updateUserById(req: IRequestExtended, res: Response): Promise<Response<IUser>> {
     const { id } = req.params;
 
     if (req.user) {
       // console.log(req.user.email);
-      await emailService.sendMail(req.user.email, emailActionEnum.PASSWORD_CHANGED);
+      await emailService.sendMail(req.user.email, emailActionEnum.PASSWORD_CHANGED, { userName: req.user.firstName });
     }
 
-    const updatedUser = await userService.updateUserPasswordById(id, password);
+    const updatedUser = await userService.updateUserById(+id, req.body);
     return res.json(updatedUser);
   }
 
@@ -35,7 +34,7 @@ class UserController {
     const { id } = req.params;
     const { email } = req.body;
 
-    await emailService.sendMail(email, emailActionEnum.ACCOUNT_DELETED);
+    await emailService.sendMail(email, emailActionEnum.ACCOUNT_DELETED, { userName: email });
 
     const softDeletedUser = await userService.softDeleteUserById(id);
     return res.json(softDeletedUser);

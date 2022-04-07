@@ -50,7 +50,15 @@ class TokenService {
       secretWord = config.SECRET_REFRESH_KEY;
     }
 
+    if (tokenType === 'action') {
+      secretWord = config.SECRET_ACTION_KEY;
+    }
+
     return jwt.verify(authToken, secretWord as string) as IUserPayload;
+  }
+
+  public generateActionToken(payload:IUserPayload): string {
+    return jwt.sign(payload, config.SECRET_ACTION_KEY, { expiresIn: config.EXPIRES_IN_ACTION });
   }
 }
 

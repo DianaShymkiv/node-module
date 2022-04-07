@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/', userController.getUsers);
 router.get('/:email', userController.getUserByEmail);
-router.patch('/:id', userMiddleware.isChangedPasswordValid, userMiddleware.getEmailByUserId, userController.updateUserPasswordById);
+router.patch('/:id', userMiddleware.isChangedPasswordValid, userMiddleware.getEmailByUserId, userController.updateUserById);
 router.delete('/:id', userController.softDeleteUserById);
 
 export const userRouter = router;

@@ -1,4 +1,5 @@
 export * from './cookie';
 export * from './constants';
 export * from './email.info';
-export * from './enums';
+export * from './emailAction.enum';
+export * from './actionTokenTypes.enum';

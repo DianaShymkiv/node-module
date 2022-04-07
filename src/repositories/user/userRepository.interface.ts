@@ -5,6 +5,6 @@ export interface IUserRepository {
     getUsers(): Promise<IUser[]>;
     createUser(user: IUser): Promise<IUser>;
     getUserByEmail(email:string): Promise<IUser | undefined>;
-    updateUserById(id: number, password: string, email: string): Promise<UpdateResult>;
+    updateUserById(id: number, user:Partial<IUser>): Promise<UpdateResult>;
     softDeleteUserById(id:number):Promise<DeleteResult>;
 }

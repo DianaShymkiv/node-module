@@ -1,27 +1,27 @@
 import { EntityRepository, getManager, Repository } from 'typeorm';
 
-import { IToken, TokenEntity } from '../../entity';
-import { ITokenRepository } from './tokenRepository.interfsce';
+import { IToken, Token } from '../../entity';
+import { ITokenRepository } from './tokenRepository.interface';
 import { ITokenDataToSave } from '../../interfaces';
 
-@EntityRepository(TokenEntity)
-class TokenRepository extends Repository<TokenEntity> implements ITokenRepository {
+@EntityRepository(Token)
+class TokenRepository extends Repository<Token> implements ITokenRepository {
   public async createToken(token: ITokenDataToSave): Promise<IToken> {
-    return getManager().getRepository(TokenEntity).save(token);
+    return getManager().getRepository(Token).save(token);
     // метод save через те що якщо такий токен вже існує то він просто зробить update
   }
 
   public findByParams(filterObject: Partial<IToken>): Promise<IToken | undefined> {
-    return getManager().getRepository(TokenEntity).findOne(filterObject);
+    return getManager().getRepository(Token).findOne(filterObject);
   }
 
   // метод який дивиться чи існує вже токен у цього юзера
   public async findTokenByUserId(userId: number): Promise<IToken | undefined> {
-    return getManager().getRepository(TokenEntity).findOne({ userId });
+    return getManager().getRepository(Token).findOne({ userId });
   }
 
   public async deleteByParams(findObject: Partial<IToken>) {
-    return getManager().getRepository(TokenEntity).delete(findObject);
+    return getManager().getRepository(Token).delete(findObject);
   }
 }
 

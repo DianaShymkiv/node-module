@@ -32,14 +32,24 @@ class UserRepository extends Repository<UserEntity> implements IUserRepository {
     return getManager().getRepository(UserEntity).find();
   }
 
-  public async updateUserById(id: number, password: string): Promise<UpdateResult> {
+  // public async updatePasswordByUserId(id: number, password: string): Promise<UpdateResult> {
+  //   return getManager()
+  //     .getRepository(UserEntity)
+  //     .update(
+  //       { id },
+  //       { password },
+  //     );
+  // }
+
+  public async updateUserById(id: number, user:Partial<IUser>): Promise<UpdateResult> {
     return getManager()
       .getRepository(UserEntity)
       .update(
         { id },
-        { password },
+        user,
       );
   }
+
 
   public async softDeleteUserById(id:number):Promise<DeleteResult> {
     return getManager()

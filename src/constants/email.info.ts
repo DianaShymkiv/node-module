@@ -1,4 +1,4 @@
-import { emailActionEnum } from './enums';
+import { emailActionEnum } from './emailAction.enum';
 
 export const emailInfo = {
   [emailActionEnum.LOGIN]: {
@@ -23,4 +23,10 @@ export const emailInfo = {
     templateName: 'welcome',
     header: 'You have been successfully registered',
   },
+   [emailActionEnum.FORGOT_PASSWORD]: {
+    subject: 'Password recovery',
+    templateName: 'password_forgot',
+    header: 'Password recovery',
+  },
+
 };

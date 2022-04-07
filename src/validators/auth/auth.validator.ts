@@ -20,4 +20,8 @@ export const authValidator = {
   changePassword: Joi.object({
     password: commonValidators.passwordValidator,
   }),
+
+  email: Joi.object({
+    email: commonValidators.emailValidator,
+  }),
 };

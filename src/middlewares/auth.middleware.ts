@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express';
 
 import { tokenService, userService } from '../services';
 import { IRequestExtended } from '../interfaces';
-import { tokenRepository } from '../repositories';
+import { actionTokenRepository, tokenRepository } from '../repositories';
 import { constants } from '../constants';
 import { authValidator } from '../validators';
 import { ErrorHandler } from '../error';
@@ -84,6 +84,45 @@ class AuthMiddleware {
     }
   }
 
+  public async checkActionToken(req:IRequestExtended, res:Response, next: NextFunction) {
+    try {
+      const actionToken = req.get(constants.AUTHIRIZATION);
+
+      if (!actionToken) {
+        next(new ErrorHandler('No token', 400));
+        return;
+      }
+
+      const { userEmail } = tokenService.verifyToken(actionToken, 'action');
+
+      const tokenFromDB = await actionTokenRepository.findByParams({ actionToken });
+      // find token in the DB
+
+      if (!tokenFromDB) {
+        next(new ErrorHandler('Token not valid', 401));
+        return;
+      }
+
+      const userFromToken = await userService.getUserByEmail(userEmail);
+
+      if (!userFromToken) {
+        next(new ErrorHandler('Token not valid', 401));
+        return;
+        // токен розшифрувався але такого немає в базі
+      }
+
+      req.user = userFromToken;
+
+      next();
+    } catch (e: any) {
+      res.status(401)
+        .json({
+          status: 401,
+          message: e.message,
+        });
+    }
+  }
+
   // VALIDATORS
   public isLoginValid(req: IRequestExtended, res: Response, next: NextFunction) {
     try {
@@ -112,6 +151,22 @@ class AuthMiddleware {
 
       req.body = value;
 
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public isEmailValid(req: IRequestExtended, res: Response, next: NextFunction) {
+    try {
+      const { error, value } = authValidator.email.validate(req.body);
+
+      if (error) {
+        next(new ErrorHandler(error.details[0].message, 400));
+        return;
+      }
+
+      req.body = value;
       next();
     } catch (e) {
       next(e);

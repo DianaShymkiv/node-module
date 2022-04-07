@@ -7,8 +7,7 @@ import { emailActionEnum, emailInfo } from '../constants';
 
 class EmailService {
   async sendMail(userMail:string, action: emailActionEnum, context = {}): Promise<SentMessageInfo> {
-
-   const templateRenderer = new EmailTemplate({
+    const templateRenderer = new EmailTemplate({
       views: {
         // process.cwd() з будь якої точки йде на стартовий файл (app.ts) але тут в нас буде зсилатись на src а на продакшені на dist
         // root: path.join(process.cwd(), 'email-templates'),
@@ -20,7 +19,7 @@ class EmailService {
 
     const { subject, templateName, header } = emailInfo[action];
 
-    Object.assign(context, {frontendUrl: config.FRONTEND_URL, header});
+    Object.assign(context, { frontendUrl: config.FRONTEND_URL, header });
 
     const html = await templateRenderer.render(templateName, context);
     // context =  a(href = '.com' --- that link is not written by people, it is taken from environmental variables

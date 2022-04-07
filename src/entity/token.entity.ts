@@ -18,7 +18,7 @@ export interface IToken extends ICommonFields{
 // згенерований штучно по наших ключах. І коли ми робимо логаут ми видаляємо і з бази
 
 @Entity('Tokens', { database: config.MYSQL_DATABASE_NAME })
-export class TokenEntity extends CommonFieldsEntity implements IToken {
+export class Token extends CommonFieldsEntity implements IToken {
     @Column({
       type: 'varchar',
       width: 255,

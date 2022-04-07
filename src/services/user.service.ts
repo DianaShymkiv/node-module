@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { DeleteResult, UpdateResult } from 'typeorm';
+import { DeleteResult } from 'typeorm';
 
 import { IUser } from '../entity';
 import { userRepository } from '../repositories';
@@ -19,6 +19,14 @@ class UserService {
     return userRepository.getUserByEmail(email);
   }
 
+  public async updateUserById(id: number, obj: Partial<IUser>): Promise<object | undefined> {
+    if (obj.password) {
+        obj.password = await this._hashPassword(obj.password);
+    }
+
+    return userRepository.updateUserById(id, obj);
+  }
+
   public async compareUserPasswords(password:string, hash:string):Promise<void | Error> {
     const isPasswordUnique = await bcrypt.compare(password, hash);
 
@@ -35,10 +43,10 @@ class UserService {
     return userRepository.getUsers();
   }
 
-  public async updateUserPasswordById(id:string, password: string): Promise<UpdateResult> {
-    const hashedPassword = await this._hashPassword(password);
-    return userRepository.updateUserById(+id, hashedPassword);
-  }
+  // public async updateUserPasswordById(id:string, password: string): Promise<UpdateResult> {
+  //   const hashedPassword = await this._hashPassword(password);
+  //   return userRepository.updatePasswordByUserId(+id, hashedPassword);
+  // }
 
   public async softDeleteUserById(id: string):Promise<DeleteResult> {
     return userRepository.softDeleteUserById(+id);
