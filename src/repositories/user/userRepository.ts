@@ -10,6 +10,7 @@ import utc from 'dayjs/plugin/utc';
 
 import { IUser, UserEntity } from '../../entity';
 import { IUserRepository } from './userRepository.interface';
+import { IPaginationResponse } from '../../interfaces';
 
 dayjs.extend(utc);
 
@@ -52,11 +53,30 @@ class UserRepository extends Repository<UserEntity> implements IUserRepository {
       .softDelete({ id });
   }
 
-  public async getNewUsers() {
+  public async getNewUsers(): Promise<IUser[]> {
     return getManager().getRepository(UserEntity)
       .createQueryBuilder('user')
-      .where('user.createdAt >= :date', {date: dayjs().utc().startOf('day').format() })
+      .where('user.createdAt >= :date', { date: dayjs().utc().startOf('day').format() })
       .getMany();
+  }
+
+  public async getUserPagination(
+    searchObject: Partial<IUser> = {},
+    limit: number,
+    page: number = 1,
+  )
+    : Promise<IPaginationResponse<IUser>> {
+    const skip = limit * (page - 1);
+
+    const [users, itemCount] = await getManager().getRepository(UserEntity)
+      .findAndCount({ where: searchObject, skip, take: limit });
+
+    return {
+      page,
+      perPage: limit,
+      itemCount,
+      data: users,
+    };
   }
 }
 

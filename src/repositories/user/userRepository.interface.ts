@@ -7,4 +7,6 @@ export interface IUserRepository {
     getUserByEmail(email:string): Promise<IUser | undefined>;
     updateUserById(id: number, user:Partial<IUser>): Promise<UpdateResult>;
     softDeleteUserById(id:number):Promise<DeleteResult>;
+    getNewUsers(): Promise<IUser[]>;
+    // getUserPagination(): Promise<IPaginationResponse<IUser>>
 }

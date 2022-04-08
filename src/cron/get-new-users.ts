@@ -8,5 +8,5 @@ export const getNewUsers = async () => {
     console.log('_____________________________________');
     console.log(newUsers);
     console.log('_____________________________________');
-  })
-}
+  });
+};

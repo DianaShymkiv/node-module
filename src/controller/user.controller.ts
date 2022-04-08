@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { DeleteResult } from 'typeorm';
 
 import { IUser } from '../entity';
@@ -38,6 +38,17 @@ class UserController {
 
     const softDeletedUser = await userService.softDeleteUserById(id);
     return res.json(softDeletedUser);
+  }
+
+  public async getUserPagination(req:Request, res:Response, next: NextFunction) {
+    try {
+      const { page = 1, perPage = 25, ...other } = req.query;
+      const userPagination = await userService.getUserPagination(other, +page, +perPage);
+
+      res.json(userPagination);
+    } catch (e) {
+      next(e);
+    }
   }
 }
 

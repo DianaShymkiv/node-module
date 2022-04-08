@@ -11,6 +11,6 @@ router.post('/logout', authMiddleware.checkAccessToken, authController.logout);
 router.post('/refresh', authMiddleware.checkRefreshToken, authController.refreshToken);
 
 router.post('/forgotPassword', authMiddleware.isEmailValid, userMiddleware.checkIsUserExist, authController.sendForgotPassword);
-router.post('/forgotPassword/set',userMiddleware.isChangedPasswordValid, authMiddleware.checkActionToken, authController.setPassword);
+router.post('/forgotPassword/set', userMiddleware.isChangedPasswordValid, authMiddleware.checkActionToken, authController.setPassword);
 
 export const authRouter = router;

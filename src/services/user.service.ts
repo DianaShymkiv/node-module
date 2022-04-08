@@ -19,9 +19,17 @@ class UserService {
     return userRepository.getUserByEmail(email);
   }
 
+  public async getUsers() : Promise<IUser[]> {
+    return userRepository.getUsers();
+  }
+
+  public async getUserPagination(filterObject: any, page: number, perPage: number) {
+    return userRepository.getUserPagination(filterObject, perPage, page);
+  }
+
   public async updateUserById(id: number, obj: Partial<IUser>): Promise<object | undefined> {
     if (obj.password) {
-        obj.password = await this._hashPassword(obj.password);
+      obj.password = await this._hashPassword(obj.password);
     }
 
     return userRepository.updateUserById(id, obj);
@@ -35,21 +43,12 @@ class UserService {
     }
   }
 
-  private async _hashPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, Number(config.USER_SALT_ROUNDS));
-  }
-
-  public async getUsers() : Promise<IUser[]> {
-    return userRepository.getUsers();
-  }
-
-  // public async updateUserPasswordById(id:string, password: string): Promise<UpdateResult> {
-  //   const hashedPassword = await this._hashPassword(password);
-  //   return userRepository.updatePasswordByUserId(+id, hashedPassword);
-  // }
-
   public async softDeleteUserById(id: string):Promise<DeleteResult> {
     return userRepository.softDeleteUserById(+id);
+  }
+
+  private async _hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, Number(config.USER_SALT_ROUNDS));
   }
 }
 

@@ -1,8 +1,12 @@
 import { NextFunction, Response } from 'express';
 
 import { IRequestExtended, ITokenData } from '../interfaces';
-import { authService, emailService, tokenService, userService } from '../services';
-import { ActionTokenTypes, constants, COOKIE, emailActionEnum } from '../constants';
+import {
+  authService, emailService, tokenService, userService,
+} from '../services';
+import {
+  ActionTokenTypes, constants, COOKIE, emailActionEnum,
+} from '../constants';
 import { actionTokenRepository, tokenRepository } from '../repositories';
 import { IUser } from '../entity';
 
@@ -35,7 +39,9 @@ class AuthController {
 
   async login(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id, email, password: hashPassword, firstName } = req.user as IUser;
+      const {
+        id, email, password: hashPassword, firstName,
+      } = req.user as IUser;
       const { password } = req.body;
 
       await emailService.sendMail(email, emailActionEnum.LOGIN, { userName: firstName });
@@ -84,7 +90,7 @@ class AuthController {
 
       const token = tokenService.generateActionToken({ userId: id, userEmail: email });
 
-      await actionTokenRepository.createActionToken({ actionToken: token, type: ActionTokenTypes.FORGOT_PASSWORD, userId: id});
+      await actionTokenRepository.createActionToken({ actionToken: token, type: ActionTokenTypes.FORGOT_PASSWORD, userId: id });
 
       await emailService.sendMail(email, emailActionEnum.FORGOT_PASSWORD, {
         userName: firstName,
@@ -109,13 +115,11 @@ class AuthController {
         userName: firstName,
       });
 
-
       res.sendStatus(201);
     } catch (e) {
       next(e);
     }
   }
-
 }
 
 export const authController = new AuthController();
