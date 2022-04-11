@@ -1,16 +1,18 @@
 import express from 'express';
 import 'reflect-metadata';
+import fileUpload from 'express-fileupload';
 import { createConnection } from 'typeorm';
 
 import { apiRouter } from './router';
 import { config } from './config';
-import { cronRun } from './cron';
+// import { cronRun } from './cron';
 
 const app = express();
 
 // @ts-ignore
 global.rootDir = __dirname;
 
+app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -34,7 +36,7 @@ app.listen(PORT, async () => {
     if (connection) {
       console.log('DB connected');
     }
-    cronRun();
+    // cronRun();
   } catch (err) {
     if (err) console.log(err);
   }

@@ -16,6 +16,7 @@
     ],
     "rules": {
         "max-len": [ "warn",{"code": 140}],
+        "no-trailing-spaces": "off",
         "no-console": "off",
         "indent": ["error", 2],
         "import/prefer-default-export": "off",

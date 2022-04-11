@@ -1,17 +1,9 @@
-import { userService } from './user.service';
 import { IUser } from '../entity';
 import { tokenService } from './token.service';
 import { ITokenData } from '../interfaces';
 
 class AuthService {
-  public async registration(body: IUser):Promise<ITokenData> {
-    const { email } = body;
-
-    const userFromDB = await userService.getUserByEmail(email);
-    if (userFromDB) {
-      throw new Error(`User with this email: ${email} already exists`);
-    }
-    const createdUser = await userService.createUser(body); // save user to db
+  public async registration(createdUser: IUser):Promise<ITokenData> {
     return this._getTokenData(createdUser);
   }
 

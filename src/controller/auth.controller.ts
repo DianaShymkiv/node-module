@@ -1,31 +1,57 @@
 import { NextFunction, Response } from 'express';
 
-import { IRequestExtended, ITokenData } from '../interfaces';
+import { IRequestExtended } from '../interfaces';
 import {
-  authService, emailService, tokenService, userService,
+  authService, emailService, s3Service, tokenService, userService,
 } from '../services';
 import {
-  ActionTokenTypes, constants, COOKIE, emailActionEnum,
+  ActionTokenTypes, constants, emailActionEnum,
 } from '../constants';
 import { actionTokenRepository, tokenRepository } from '../repositories';
 import { IUser } from '../entity';
+import { ErrorHandler } from '../error';
+import { UploadedFile } from 'express-fileupload';
 
 class AuthController {
-  public async registration(req: IRequestExtended, res: Response): Promise<Response<ITokenData>> {
-    const data = await authService.registration(req.body);
-    const { userEmail: email } = data;
+  public async registration(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { email } = req.body;
+      const avatar = req.files?.avatar as UploadedFile;
 
-    await emailService.sendMail(email, emailActionEnum.REGISTRATION, { userName: req.user?.firstName });
+      const userFromDB = await userService.getUserByEmail(email);
+      if (userFromDB) {
+        next(new ErrorHandler(`User with this email: ${email} already exists`));
+        return;
+      }
+      const createdUser = await userService.createUser(req.body);
 
-    res.cookie(
-      COOKIE.nameRefreshToken,
-      data.refreshToken,
-      { maxAge: COOKIE.maxAgeRefreshToken, httpOnly: true },
-      // час в мілісекундах, httpOnly - щоб не можна було в cookie писати на js
-      // в data приходить tokenPair з якої ми дістаємо refreshToken
-    );
+      await emailService.sendMail(email, emailActionEnum.REGISTRATION, { userName: req.user?.firstName });
 
-    return res.json(data);
+      // UPLOAD PHOTO
+      if (avatar) {
+       const sendData = await s3Service.uploadFile(avatar, 'user', createdUser.id);
+
+        console.log('_____________________________________');
+        console.log(sendData.Location);
+        console.log('_____________________________________');
+
+        // UPDATE USER
+        // we dont save avatar in the db only give url for the bucket
+      }
+
+
+      // res.cookie(
+      //   COOKIE.nameRefreshToken,
+      //   data.refreshToken,
+      //   { maxAge: COOKIE.maxAgeRefreshToken, httpOnly: true },
+      // );
+
+      const tokenData = await authService.registration(createdUser);
+
+      res.json(tokenData);
+    } catch (e) {
+      next(e);
+    }
   }
 
   public async logout(req: IRequestExtended, res: Response): Promise<Response<string>> {
