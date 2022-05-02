@@ -1,3 +1,4 @@
+export * from './chat.entity';
 export * from './comment.entity';
 export * from './commonFields.entity';
 export * from './posts.entity';

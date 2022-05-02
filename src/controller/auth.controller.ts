@@ -1,5 +1,6 @@
 import { NextFunction, Response } from 'express';
 
+import { UploadedFile } from 'express-fileupload';
 import { IRequestExtended } from '../interfaces';
 import {
   authService, emailService, s3Service, tokenService, userService,
@@ -10,7 +11,6 @@ import {
 import { actionTokenRepository, tokenRepository } from '../repositories';
 import { IUser } from '../entity';
 import { ErrorHandler } from '../error';
-import { UploadedFile } from 'express-fileupload';
 
 class AuthController {
   public async registration(req: IRequestExtended, res: Response, next: NextFunction): Promise<void> {
@@ -29,22 +29,13 @@ class AuthController {
 
       // UPLOAD PHOTO
       if (avatar) {
-       const sendData = await s3Service.uploadFile(avatar, 'user', createdUser.id);
+        const sendData = await s3Service.uploadFile(avatar, 'user', createdUser.id);
 
         console.log('_____________________________________');
         console.log(sendData.Location);
         console.log('_____________________________________');
 
-        // UPDATE USER
-        // we dont save avatar in the db only give url for the bucket
       }
-
-
-      // res.cookie(
-      //   COOKIE.nameRefreshToken,
-      //   data.refreshToken,
-      //   { maxAge: COOKIE.maxAgeRefreshToken, httpOnly: true },
-      // );
 
       const tokenData = await authService.registration(createdUser);
 
@@ -73,7 +64,6 @@ class AuthController {
       await emailService.sendMail(email, emailActionEnum.LOGIN, { userName: firstName });
 
       await userService.compareUserPasswords(password, hashPassword);
-      // вертати нічого не потрібно, якщо співпадають то добре і пішли далі якщо ні то впаде помилка
 
       const { refreshToken, accessToken } = tokenService.generateTokenPair({ userId: id, userEmail: email });
 

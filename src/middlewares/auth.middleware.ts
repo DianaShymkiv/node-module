@@ -6,6 +6,7 @@ import { actionTokenRepository, tokenRepository } from '../repositories';
 import { constants } from '../constants';
 import { authValidator } from '../validators';
 import { ErrorHandler } from '../error';
+import { TokenTypes } from '../enum';
 
 class AuthMiddleware {
   public async checkAccessToken(req:IRequestExtended, res:Response, next: NextFunction) {
@@ -31,7 +32,6 @@ class AuthMiddleware {
       if (!userFromToken) {
         next(new ErrorHandler('Token not valid', 401));
         return;
-        // токен розшифрувався але такого немає в базі
       }
 
       req.user = userFromToken;
@@ -54,7 +54,7 @@ class AuthMiddleware {
         return;
       }
 
-      const { userEmail } = tokenService.verifyToken(refreshToken, 'refresh');
+      const { userEmail } = tokenService.verifyToken(refreshToken, TokenTypes.REFRESH);
 
       const tokenPairFromDB = await tokenRepository.findByParams({ refreshToken });
       // find token in the DB
@@ -69,7 +69,6 @@ class AuthMiddleware {
       if (!userFromToken) {
         next(new ErrorHandler('Token not valid', 401));
         return;
-        // токен розшифрувався але такого немає в базі
       }
 
       req.user = userFromToken;
@@ -93,7 +92,7 @@ class AuthMiddleware {
         return;
       }
 
-      const { userEmail } = tokenService.verifyToken(actionToken, 'action');
+      const { userEmail } = tokenService.verifyToken(actionToken, TokenTypes.ACTION);
 
       const tokenFromDB = await actionTokenRepository.findByParams({ actionToken });
       // find token in the DB
@@ -108,7 +107,6 @@ class AuthMiddleware {
       if (!userFromToken) {
         next(new ErrorHandler('Token not valid', 401));
         return;
-        // токен розшифрувався але такого немає в базі
       }
 
       req.user = userFromToken;

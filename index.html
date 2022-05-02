@@ -1,49 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src=" https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+          integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+          crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <title>Title</title>
 </head>
 <body>
-
-<button id="sendMessage">SEND</button>
-<button id="join1">JOIN ROOM 1</button>
-<button id="join2">JOIN ROOM 2</button>
+<form name="message" id="form-message">
+  <input type="text" id="input">
+  <button id="sendMessage">Send</button>
+</form>
+<button id="room-1">Join room 1</button>
+<button id="room-2">Join room 2</button>
+<button id="room-3">Join room 3</button>
+<form name="form-checkbox">
+  <div>
+    <input type="checkbox" id="send-all" checked>
+    <label for="send-all">Send all</label>
+  </div>
+  <div>
+    <input type="checkbox" id="send-room-1" hidden>
+    <label for="send-room-1">Send room 1</label>
+  </div>
+  <div>
+    <input type="checkbox" id="send-room-2" hidden>
+    <label for="send-room-2">Send room 2</label>
+  </div>
+  <div>
+    <input type="checkbox" id="send-room-3" hidden>
+    <label for="send-room-3">Send room 3</label>
+  </div>
+</form>
 
 <script>
+  const {
+    accessToken,
+    user: { id }
+  } = JSON.parse(localStorage.getItem('user'));
 
-    const socket = io('http://localhost:5500', {query: 'userId='});
+  const room1btn = document.getElementById('room-1');
+  const room2btn = document.getElementById('room-2');
+  const room3btn = document.getElementById('room-3');
+  const sendMessageBtn = document.getElementById('sendMessage');
 
-    const btn =  document.getElementById('sendMessage');
-    const join1 =  document.getElementById('join1');
-    const join2 =  document.getElementById('join2');
+  const socket = io('http://localhost:5500',
+          { query: `userId=${id}&accessToken=${accessToken}` });
 
-    btn.onclick = () => {
-      socket.emit('message:create', {message: 'HELLO'});
+  room1btn.onclick = () => {
+    socket.emit('join_room', { id: 1 });
+    document.getElementById('send-room-1').hidden = false;
+  };
+
+  room2btn.onclick = () => {
+    socket.emit('join_room', { id: 2 });
+    document.getElementById('send-room-2').hidden = false;
+  };
+
+  room3btn.onclick = () => {
+    socket.emit('join_room', { id: 3 });
+    document.getElementById('send-room-3').hidden = false;
+  };
+
+  sendMessageBtn.onclick = (ev) => {
+    ev.preventDefault();
+    const message = document.getElementById('input').value;
+    const allCheck = document.getElementById('send-all');
+    const room1Check = document.getElementById('send-room-1');
+    const room2Check = document.getElementById('send-room-2');
+    const room3Check = document.getElementById('send-room-3');
+
+    if (allCheck.checked) {
+      socket.emit('message:send', {
+        message,
+        room: 0
+      });
     }
-
-    join1.onclick = () => {
-      socket.emit('join_room', {id: 1});
+    if (room1Check.checked) {
+      socket
+              .emit('message:send', {
+                message,
+                room: 1
+              });
     }
-
-    join2.onclick = () => {
-      socket.emit('join_room', {id: 2});
+    if (room2Check.checked) {
+      socket
+              .emit('message:send', {
+                message,
+                room: 2
+              });
     }
+    if (room3Check.checked) {
+      socket
+              .emit('message:send', {
+                message,
+                room: 3
+              });
+    }
+  };
 
-    socket.on('message:get-all', (data) => {
-      console.log('..............');
-      console.log(data);
-      console.log('..............');
-    })
+  socket.on('message:get-new-message', (data) => {
+    const {
+      message,
+      firstName,
+      lastName
+    } = data;
+    console.log('*******************');
+    console.log(`${firstName} ${lastName}: ${message}`);
+    console.log('*******************');
+  });
 
-    socket.on('user_join_room', (data) => {
-      console.log('----------------');
-      console.log(data);
-      console.log('----------------');
-    })
-
+  socket.on('user_join_room', (data) => {
+    console.log('@@@@@@@@@@@@@@@@@@');
+    console.log(data);
+    console.log('@@@@@@@@@@@@@@@@@@');
+  })
 </script>
-
 </body>
 </html>

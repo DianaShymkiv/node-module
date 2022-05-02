@@ -1,8 +1,10 @@
 import jwt from 'jsonwebtoken';
+
 import { config } from '../config';
 import { IToken } from '../entity';
 import { tokenRepository } from '../repositories';
 import { ITokenPair, IUserPayload } from '../interfaces';
+import { TokenTypes } from '../enum';
 
 class TokenService {
   public generateTokenPair(payload:IUserPayload): ITokenPair {
@@ -41,19 +43,19 @@ class TokenService {
     return tokenRepository.deleteByParams(searchObject);
   }
 
-  verifyToken(authToken: string, tokenType = 'access'):IUserPayload {
-    // перевіряємо токен, по дефолту tokenType = access то розкодовуємо за SECRET_ACCESS_KEY
-    // ,але якщо tokenType = refresh то за рефреш
+  verifyToken(authToken: string, tokenType = TokenTypes.ACCESS):IUserPayload {
     let secretWord = config.SECRET_ACCESS_KEY;
 
-    if (tokenType === 'refresh') {
+    switch (tokenType) {
+    case TokenTypes.REFRESH:
       secretWord = config.SECRET_REFRESH_KEY;
-    }
-
-    if (tokenType === 'action') {
+      break;
+    case TokenTypes.ACTION:
       secretWord = config.SECRET_ACTION_KEY;
+      break;
+    default:
+      console.log('Incorrect  token type');
     }
-
     return jwt.verify(authToken, secretWord as string) as IUserPayload;
   }
 

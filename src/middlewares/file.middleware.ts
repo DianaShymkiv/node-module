@@ -15,7 +15,7 @@ class FileMiddleware {
         return;
       }
 
-      const { name, size, mimetype } = req.files.avatar as UploadedFile;
+      const { name, size, mimetype } = req.files?.avatar as UploadedFile;
 
       if (size > constants.PHOTO_MAX_SIZE) {
         next(new ErrorHandler(`File ${name} is too big`));

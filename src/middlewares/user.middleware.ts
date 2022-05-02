@@ -13,7 +13,6 @@ class UserMiddleware {
 
       if (!userFromDB) {
         next(new ErrorHandler('User not found', 404));
-        // передбачена помилка
         return;
       }
 
@@ -21,7 +20,6 @@ class UserMiddleware {
       next();
     } catch (e) {
       next(e);
-      // в catch будуть падати помилки які не змогли передбачити
     }
   }
 
